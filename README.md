@@ -13,7 +13,8 @@ This application demonstrates a full-stack AI-powered assistant leveraging:
 ## Features
 
 Study Tools
-1. Flashcard Creator
+
+# 1. Flashcard Creator
   - Create and organize flashcard sets for any subject.
   - Stores flashcard sets with unique IDs
   - Organizes by subject and topic
