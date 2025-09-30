@@ -14,7 +14,7 @@ This application demonstrates a full-stack AI-powered assistant leveraging:
 
 Study Tools
 
-# 1. Flashcard Creator
+1. Flashcard Creator
   - Create and organize flashcard sets for any subject.
   - Stores flashcard sets with unique IDs
   - Organizes by subject and topic
@@ -51,21 +51,15 @@ Study Tools
 - Cloudflare account
 - OpenAI API key
 
-## Quick Start
+## Launch Locally
 
-1. Create a new project:
-
-```bash
-npx create-cloudflare@latest --template cloudflare/agents-starter
-```
-
-2. Install dependencies:
+1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-3. Set up your environment:
+2. Set up your environment:
 
 Create a `.dev.vars` file:
 
@@ -73,16 +67,10 @@ Create a `.dev.vars` file:
 OPENAI_API_KEY=your_openai_api_key
 ```
 
-4. Run locally:
+3. Run locally:
 
 ```bash
 npm start
-```
-
-5. Deploy:
-
-```bash
-npm run deploy
 ```
 
 ## Project Structure
