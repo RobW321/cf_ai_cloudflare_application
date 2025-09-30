@@ -1,20 +1,54 @@
-# 🤖 Chat Agent Starter Kit
+# ☁️ cf_ai_cloudflare_application
 
-![npm i agents command](./npm-agents-banner.svg)
+An AI-powered Study & Learning Assistant built on Cloudflare's infrastructure, featuring intelligent study tools, flashcard management, exam planning, and progress tracking.
 
-<a href="https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/agents-starter"><img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare"/></a>
+## 🎯 Overview
+This application demonstrates a full-stack AI-powered assistant leveraging:
 
-A starter template for building AI-powered chat agents using Cloudflare's Agent platform, powered by [`agents`](https://www.npmjs.com/package/agents). This project provides a foundation for creating interactive chat experiences with AI, complete with a modern UI and tool integration capabilities.
+- LLM: OpenAI GPT-4 for natural language understanding and intelligent responses
+- Workflow/Coordination: Cloudflare Workers with built-in scheduling and task management
+- User Interaction: Real-time chat interface via Cloudflare Pages
+- Memory/State: Persistent conversation history and user data storage using the Agents framework
 
 ## Features
 
-- 💬 Interactive chat interface with AI
-- 🛠️ Built-in tool system with human-in-the-loop confirmation
-- 📅 Advanced task scheduling (one-time, delayed, and recurring via cron)
-- 🌓 Dark/Light theme support
-- ⚡️ Real-time streaming responses
-- 🔄 State management and chat history
-- 🎨 Modern, responsive UI
+Study Tools
+1. Flashcard Creator
+Create and organize flashcard sets for any subject.
+
+Stores flashcard sets with unique IDs
+Organizes by subject and topic
+Maintains card history for review
+
+2. Study Session Timer
+Start focused study sessions with automatic break scheduling using the Pomodoro technique.
+
+Tracks active study sessions
+Calculates optimal break times
+Provides session end time estimates
+
+3. Quiz Generator
+Generate practice quizzes on any topic with customizable difficulty.
+
+Adjustable difficulty levels (easy, medium, hard)
+Configurable number of questions (1-20)
+Unique quiz IDs for tracking
+
+4. Study Progress Logger
+Track your study hours, topics covered, and understanding level per subject.
+
+Records study hours by subject
+Tracks topics covered per session
+Monitors understanding progression
+Maintains historical study data
+
+5. Exam Preparation Planner
+Create personalized study plans leading up to exam dates.
+
+Calculates days until exam
+Distributes study time across subjects
+Adapts to current knowledge level
+Generates structured study schedules
 
 ## Prerequisites
 
