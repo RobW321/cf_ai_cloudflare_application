@@ -2,6 +2,8 @@
 
 An AI-powered Study & Learning Assistant built on Cloudflare's infrastructure, featuring intelligent study tools, flashcard management, exam planning, and progress tracking.
 
+Cloudflare Link: https://agents-starter.robelw135.workers.dev/
+
 ## 🎯 Overview
 This application demonstrates a full-stack AI-powered assistant leveraging:
 
