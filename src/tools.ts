@@ -2,122 +2,150 @@
  * Tool definitions for the AI chat agent
  * Tools can either require human confirmation or execute automatically
  */
-import { tool, type ToolSet } from "ai";
+import { tool, type ToolSet, generateId } from "ai";
 import { z } from "zod/v3";
 
 import type { Chat } from "./server";
 import { getCurrentAgent } from "agents";
 import { scheduleSchema } from "agents/schedule";
 
-/**
- * Weather information tool that requires human confirmation
- * When invoked, this will present a confirmation dialog to the user
- */
-const getWeatherInformation = tool({
-  description: "show the weather in a given city to the user",
-  inputSchema: z.object({ city: z.string() })
-  // Omitting execute function makes this tool require human confirmation
-});
 
-/**
- * Local time tool that executes automatically
- * Since it includes an execute function, it will run without user confirmation
- * This is suitable for low-risk operations that don't need oversight
- */
-const getLocalTime = tool({
-  description: "get the local time for a specified location",
-  inputSchema: z.object({ location: z.string() }),
-  execute: async ({ location }) => {
-    console.log(`Getting local time for ${location}`);
-    return "10am";
-  }
-});
-
-const scheduleTask = tool({
-  description: "A tool to schedule a task to be executed at a later time",
-  inputSchema: scheduleSchema,
-  execute: async ({ when, description }) => {
-    // we can now read the agent context from the ALS store
-    const { agent } = getCurrentAgent<Chat>();
-
-    function throwError(msg: string): string {
-      throw new Error(msg);
-    }
-    if (when.type === "no-schedule") {
-      return "Not a valid schedule input";
-    }
-    const input =
-      when.type === "scheduled"
-        ? when.date // scheduled
-        : when.type === "delayed"
-          ? when.delayInSeconds // delayed
-          : when.type === "cron"
-            ? when.cron // cron
-            : throwError("not a valid schedule input");
-    try {
-      agent!.schedule(input!, "executeTask", description);
-    } catch (error) {
-      console.error("error scheduling task", error);
-      return `Error scheduling task: ${error}`;
-    }
-    return `Task scheduled for type "${when.type}" : ${input}`;
-  }
-});
-
-/**
- * Tool to list all scheduled tasks
- * This executes automatically without requiring human confirmation
- */
-const getScheduledTasks = tool({
-  description: "List all tasks that have been scheduled",
-  inputSchema: z.object({}),
-  execute: async () => {
-    const { agent } = getCurrentAgent<Chat>();
-
-    try {
-      const tasks = agent!.getSchedules();
-      if (!tasks || tasks.length === 0) {
-        return "No scheduled tasks found.";
-      }
-      return tasks;
-    } catch (error) {
-      console.error("Error listing scheduled tasks", error);
-      return `Error listing scheduled tasks: ${error}`;
-    }
-  }
-});
-
-/**
- * Tool to cancel a scheduled task by its ID
- * This executes automatically without requiring human confirmation
- */
-const cancelScheduledTask = tool({
-  description: "Cancel a scheduled task using its ID",
+// 1. Create Flashcard Set
+const createFlashcards = tool({
+  description: "Create a set of flashcards for studying a topic",
   inputSchema: z.object({
-    taskId: z.string().describe("The ID of the task to cancel")
+    subject: z.string(),
+    topic: z.string(),
+    cards: z.array(z.object({
+      question: z.string(),
+      answer: z.string()
+    }))
   }),
-  execute: async ({ taskId }) => {
+  execute: async ({ subject, topic, cards }) => {
+    const setId = `flashcard-${Date.now()}`;
     const { agent } = getCurrentAgent<Chat>();
-    try {
-      await agent!.cancelSchedule(taskId);
-      return `Task ${taskId} has been successfully canceled.`;
-    } catch (error) {
-      console.error("Error canceling scheduled task", error);
-      return `Error canceling task ${taskId}: ${error}`;
-    }
+    
+    await agent!.saveMessages([
+      ...agent!.messages,
+      {
+        id: generateId(),
+        role: "system",
+        parts: [{ type: "text", text: `Flashcard set created: ${topic}` }],
+        metadata: { flashcards: { id: setId, subject, topic, cards, createdAt: new Date().toISOString() }}
+      }
+    ]);
+    
+    return `Created flashcard set "${topic}" for ${subject} with ${cards.length} cards. ID: ${setId}`;
   }
 });
+
+// 2. Study Session Timer
+const startStudySession = tool({
+  description: "Start a timed study session with breaks (Pomodoro technique)",
+  inputSchema: z.object({
+    subject: z.string(),
+    durationMinutes: z.number(),
+    breakMinutes: z.number().optional()
+  }),
+  execute: async ({ subject, durationMinutes, breakMinutes = 5 }) => {
+    const sessionId = `study-${Date.now()}`;
+    const endTime = new Date(Date.now() + durationMinutes * 60000).toLocaleTimeString();
+    
+    return `Study session started for ${subject}
+Duration: ${durationMinutes} minutes
+Break after: ${breakMinutes} minutes
+Session ends at: ${endTime}
+Session ID: ${sessionId}`;
+  }
+});
+
+// 3. Quiz Generator
+const generateQuiz = tool({
+  description: "Generate a quiz based on study material or topic",
+  inputSchema: z.object({
+    topic: z.string(),
+    numberOfQuestions: z.number().min(1).max(20),
+    difficulty: z.enum(["easy", "medium", "hard"])
+  }),
+  execute: async ({ topic, numberOfQuestions, difficulty }) => {
+    const quizId = `quiz-${Date.now()}`;
+    
+    return `Generated ${difficulty} quiz on "${topic}"
+Questions: ${numberOfQuestions}
+Quiz ID: ${quizId}
+Ready to start the quiz!`;
+  }
+});
+
+// 4. Study Progress Tracker
+const logStudyProgress = tool({
+  description: "Log your study progress and track hours studied per subject",
+  inputSchema: z.object({
+    subject: z.string(),
+    hoursStudied: z.number(),
+    topicsCovered: z.array(z.string()),
+    understandingLevel: z.enum(["beginner", "intermediate", "advanced"])
+  }),
+  execute: async ({ subject, hoursStudied, topicsCovered, understandingLevel }) => {
+    const { agent } = getCurrentAgent<Chat>();
+    
+    await agent!.saveMessages([
+      ...agent!.messages,
+      {
+        id: generateId(),
+        role: "system",
+        parts: [{ type: "text", text: `Study progress logged for ${subject}` }],
+        metadata: { 
+          studyLog: { 
+            subject, 
+            hoursStudied, 
+            topicsCovered, 
+            understandingLevel,
+            date: new Date().toISOString() 
+          }
+        }
+      }
+    ]);
+    
+    return `Logged ${hoursStudied} hours for ${subject}
+Topics covered: ${topicsCovered.join(", ")}
+Understanding level: ${understandingLevel}`;
+  }
+});
+
+// 5. Exam Preparation Planner
+const createExamPlan = tool({
+  description: "Create a study plan leading up to an exam date",
+  inputSchema: z.object({
+    examName: z.string(),
+    examDate: z.string(),
+    subjects: z.array(z.string()),
+    currentKnowledgeLevel: z.enum(["low", "medium", "high"])
+  }),
+  execute: async ({ examName, examDate, subjects, currentKnowledgeLevel }) => {
+    const daysUntilExam = Math.ceil((new Date(examDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+    const studyDaysPerSubject = Math.floor(daysUntilExam / subjects.length);
+    
+    return `Exam Preparation Plan for "${examName}"
+Exam Date: ${examDate} (${daysUntilExam} days away)
+Subjects: ${subjects.join(", ")}
+Current level: ${currentKnowledgeLevel}
+Recommended: ${studyDaysPerSubject} days per subject
+Plan created successfully!`;
+  }
+});
+
 
 /**
  * Export all available tools
  * These will be provided to the AI model to describe available capabilities
  */
 export const tools = {
-  getWeatherInformation,
-  getLocalTime,
-  scheduleTask,
-  getScheduledTasks,
-  cancelScheduledTask
+  createFlashcards,
+  startStudySession,
+  generateQuiz,
+  logStudyProgress,
+  createExamPlan,
 } satisfies ToolSet;
 
 /**
