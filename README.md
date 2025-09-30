@@ -14,36 +14,36 @@ This application demonstrates a full-stack AI-powered assistant leveraging:
 
 Study Tools
 1. Flashcard Creator
-- Create and organize flashcard sets for any subject.
-- Stores flashcard sets with unique IDs
-- Organizes by subject and topic
-- Maintains card history for review
+  - Create and organize flashcard sets for any subject.
+  - Stores flashcard sets with unique IDs
+  - Organizes by subject and topic
+  - Maintains card history for review
 
 2. Study Session Timer
-- Start focused study sessions with automatic break scheduling using the Pomodoro technique.
-- Tracks active study sessions
-- Calculates optimal break times
-- Provides session end time estimates
+  - Start focused study sessions with automatic break scheduling using the Pomodoro technique.
+  - Tracks active study sessions
+  - Calculates optimal break times
+  - Provides session end time estimates
 
 3. Quiz Generator
-- Generate practice quizzes on any topic with customizable difficulty.
-- Adjustable difficulty levels (easy, medium, hard)
-- Configurable number of questions (1-20)
-- Unique quiz IDs for tracking
+  - Generate practice quizzes on any topic with customizable difficulty.
+  - Adjustable difficulty levels (easy, medium, hard)
+  - Configurable number of questions (1-20)
+  - Unique quiz IDs for tracking
 
 4. Study Progress Logger
-- Track your study hours, topics covered, and understanding level per subject.
-- Records study hours by subject
-- Tracks topics covered per session
-- Monitors understanding progression
-- Maintains historical study data
+  - Track your study hours, topics covered, and understanding level per subject.
+  - Records study hours by subject
+  - Tracks topics covered per session
+  - Monitors understanding progression
+  - Maintains historical study data
 
 5. Exam Preparation Planner
-- Create personalized study plans leading up to exam dates.
-- Calculates days until exam
-- Distributes study time across subjects
-- Adapts to current knowledge level
-- Generates structured study schedules
+  - Create personalized study plans leading up to exam dates.
+  - Calculates days until exam
+  - Distributes study time across subjects
+  - Adapts to current knowledge level
+  - Generates structured study schedules
 
 ## Prerequisites
 
