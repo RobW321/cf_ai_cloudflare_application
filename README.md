@@ -5,7 +5,7 @@ An AI-powered Study & Learning Assistant built on Cloudflare's infrastructure, f
 Cloudflare Link: https://agents-starter.robelw135.workers.dev/
 
 ## 🎯 Overview
-This application demonstrates a full-stack AI-powered assistant leveraging:
+This application contains a full-stack AI-powered assistant leveraging:
 
 - LLM: OpenAI GPT-4 for natural language understanding and intelligent responses
 - Workflow/Coordination: Cloudflare Workers with built-in scheduling and task management
